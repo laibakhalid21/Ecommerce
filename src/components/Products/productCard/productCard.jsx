@@ -24,15 +24,20 @@ function ProductCard({ product, setmsg, onClick }) {
     return stars;
   };
 
+  const handleWishlist = (e, product) => {
+    e.stopPropagation();
+    addWishlist(product);
+  }
+
   return (
     <div className="border cursor-pointer bg-slate-100 rounded-lg shadow p-4 hover:scale-105 transition duration-200 ease-linear hover:shadow-xl flex flex-col justify-between"
       onClick={onclick}
     >
       <div className="flex justify-end">
         <button
-          onClick={() => {
+          onClick={(e) => {
             if (isInWishlist(product.id)) removeFromWishlist(product.id);
-            else addWishlist(product);
+            else handleWishlist(e,product);
           }}
           className="text-red-500 hover:scale-110 transition duration-200 ease-in-out"
         >
