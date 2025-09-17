@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useCartStore } from "../CartContext/cartContext"; 
+import { useCartStore } from "../CartContext/cartContext";
 
 function Orders() {
   const cart = useCartStore((state) => state.cart);
-   const clearCart = useCartStore((state) => state.clearCart);
-
+  const clearCart = useCartStore((state) => state.clearCart);
 
   const [form, setForm] = useState({
     email: "",
@@ -17,22 +16,33 @@ function Orders() {
     zip: "",
   });
 
-  const [errors, setErrors] = useState({}); 
-  const [message, setMessage] = useState(""); 
-  const [msgType, setMsgType] = useState(""); 
+  const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
+  const [msgType, setMsgType] = useState("");
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  function handleChange(event) {
+  const name = event.target.name;   
+  const value = event.target.value;  
 
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: "" });
-    }
+  const updatedForm = {
+    ...form,     
+    [name]: value 
   };
+  setForm(updatedForm);
+
+
+  if (errors[name]) {
+    const updatedErrors = { ...errors }; 
+    updatedErrors[name] = "";           
+    setErrors(updatedErrors);           
+  }
+}
+
 
   const validateForm = () => {
-    let newErrors = {};
+    const newErrors = {};
     if (!form.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = "Invalid email";
 
@@ -67,7 +77,8 @@ function Orders() {
       subtotal,
       total: subtotal,
     };
-clearCart();
+
+    clearCart();
     setMessage("Order Placed Successfully!");
     setMsgType("success");
 
@@ -83,6 +94,17 @@ clearCart();
     });
   };
 
+  const billingFields = [
+    { name: "email", placeholder: "Email Address*", required: true, col: "w-full", type: "email" },
+    { name: "firstName", placeholder: "First Name*", required: true, col: "w-1/2" },
+    { name: "lastName", placeholder: "Last Name*", required: true, col: "w-1/2" },
+    { name: "country", placeholder: "Country", col: "w-full" },
+    { name: "address", placeholder: "House Number and Street Name*", required: true, col: "w-full" },
+    { name: "city", placeholder: "Town/City*", required: true, col: "w-1/3" },
+    { name: "state", placeholder: "State", col: "w-1/3" },
+    { name: "zip", placeholder: "Zip Code*", required: true, type: "number", col: "w-1/3" },
+  ];
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="space-y-6">
@@ -90,125 +112,35 @@ clearCart();
 
         {message && (
           <div
-            className={`p-3 rounded-lg text-sm ${
-              msgType === "success"
+            className={`p-3 rounded-lg text-sm ${msgType === "success"
                 ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-700"
-            }`}
+              }`}
           >
             {message}
           </div>
         )}
 
         <div className="space-y-3">
-          <h2 className="text-2xl font-semibold">Contact</h2>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={form.email}
-            onChange={handleChange}
-            className={`w-full border rounded-lg p-2 ${
-              errors.email ? "border-red-500" : ""
-            }`}
-          />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-        </div>
+          <h2 className="text-2xl font-semibold">Contact & Billing Details</h2>
 
-        <div className="space-y-3">
-          <h2 className="text-2xl font-semibold">Billing Details</h2>
-
-          <div className="flex gap-3">
-            <div className="w-1/2">
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First Name*"
-                value={form.firstName}
-                onChange={handleChange}
-                className={`w-full border rounded-lg p-2 ${
-                  errors.firstName ? "border-red-500" : ""
-                }`}
-              />
-              {errors.firstName && (
-                <p className="text-red-500 text-sm">{errors.firstName}</p>
-              )}
-            </div>
-            <div className="w-1/2">
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name*"
-                value={form.lastName}
-                onChange={handleChange}
-                className={`w-full border rounded-lg p-2 ${
-                  errors.lastName ? "border-red-500" : ""
-                }`}
-              />
-              {errors.lastName && (
-                <p className="text-red-500 text-sm">{errors.lastName}</p>
-              )}
-            </div>
-          </div>
-
-          <input
-            type="text"
-            name="country"
-            value={form.country}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2"
-          />
-
-          <input
-            type="text"
-            name="address"
-            placeholder="House Number and Street Name*"
-            value={form.address}
-            onChange={handleChange}
-            className={`w-full border rounded-lg p-2 ${
-              errors.address ? "border-red-500" : ""
-            }`}
-          />
-          {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
-
-          <div className="flex gap-3">
-            <div className="w-1/3">
-              <input
-                type="text"
-                name="city"
-                placeholder="Town/City*"
-                value={form.city}
-                onChange={handleChange}
-                className={`w-full border rounded-lg p-2 ${
-                  errors.city ? "border-red-500" : ""
-                }`}
-              />
-              {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
-            </div>
-
-            <div className="w-1/3">
-              <input
-                type="text"
-                name="state"
-                value={form.state}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2"
-              />
-            </div>
-
-            <div className="w-1/3">
-              <input
-                type="number"
-                name="zip"
-                placeholder="Zip Code*"
-                value={form.zip}
-                onChange={handleChange}
-                className={`w-full border rounded-lg p-2 ${
-                  errors.zip ? "border-red-500" : ""
-                }`}
-              />
-              {errors.zip && <p className="text-red-500 text-sm">{errors.zip}</p>}
-            </div>
+          <div className="flex flex-wrap gap-3">
+            {billingFields.map((field) => (
+              <div key={field.name} className={field.col}>
+                <input
+                  type={field.type || "text"}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  value={form[field.name]}
+                  onChange={handleChange}
+                  className={`w-full border rounded-lg p-2 ${errors[field.name] ? "border-red-500" : ""
+                    }`}
+                />
+                {errors[field.name] && (
+                  <p className="text-red-500 text-sm">{errors[field.name]}</p>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>

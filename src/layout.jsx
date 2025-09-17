@@ -11,8 +11,6 @@ function Layout() {
       <Navbar 
         searchQuery={searchQuery} 
         setSearchQuery={setSearchQuery} 
-        category={category}
-        setCategory={setCategory} 
       />
       <Outlet context={{ searchQuery, category }} />
       <Footer />

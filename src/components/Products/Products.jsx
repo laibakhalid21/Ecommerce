@@ -4,6 +4,7 @@ import BestSellers from "./BestSells/BestSell";
 import NewArrivals from "./arrivals/arrivals";
 import FeaturedProducts from "./featuredProd/featuredPro";
 import { useOutletContext } from "react-router-dom";
+import ProductDetails from "./ProductDetaisl/ProductDetails";
 
 function Products({ category }) {
   const [products, setProducts] = useState([]);
@@ -11,6 +12,7 @@ function Products({ category }) {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
   const [msg, setmsg] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const { searchQuery } = useOutletContext();
 
@@ -44,27 +46,41 @@ function Products({ category }) {
     let filtered = products;
     let newActiveFilter = "all";
 
+    const query = searchQuery?.trim().toLowerCase();
+
     if (category && category !== "all") {
       filtered = products.filter((p) => p.category === category);
       newActiveFilter = category;
     }
 
-    const query = searchQuery?.trim().toLowerCase();
     if (query && query !== "") {
-      filtered = filtered.filter(
-        (p) =>
-          p.title.toLowerCase().includes(query) ||
-          p.category.toLowerCase().includes(query)
-      );
-
-      const categoryMap = {
-        "women": "women's clothing",
-        "men": "men's clothing",
-        "electronics": "electronics",
-        "jewelery": "jewelery",
+      const keywordRules = {
+        men: ["men's clothing"],
+        "men's": ["men's clothing"],
+        man: ["men's clothing"],
+        women: ["women's clothing"],
+        "women's": ["women's clothing"],
+        cloth: ["men's clothing", "women's clothing"],
+        clothes: ["men's clothing", "women's clothing"],
+        clothing: ["men's clothing", "women's clothing"],
+        electronics: ["electronics"],
+        jewelery: ["jewelery"],
+        bag: ["laptop", "bag"],
       };
-      const matchedKey = categoryMap[query];
-      if (matchedKey) newActiveFilter = matchedKey;
+
+      if (keywordRules[query]) {
+        filtered = products.filter((p) =>
+          keywordRules[query].includes(p.category.toLowerCase())
+        );
+        newActiveFilter =
+          keywordRules[query].length === 1 ? keywordRules[query][0] : "all";
+      } else {
+        filtered = products.filter(
+          (p) =>
+            p.title.toLowerCase().includes(query) ||
+            p.category.toLowerCase().includes(query)
+        );
+      }
     }
 
     setFilterProd(filtered);
@@ -114,20 +130,41 @@ function Products({ category }) {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
             {filterProducts.length === 0 ? (
               <p className="col-span-full text-center text-xl font-semibold mt-10 text-red-600">
-                No products found
+                No products found "{searchQuery}"
               </p>
             ) : (
               filterProducts.map((product) => (
-                <ProductCard key={product.id} product={product} setmsg={setmsg} />
+                <div key={product.id} className="cursor-pointer" onClick={() => setSelectedProduct(product)}>
+                  <ProductCard product={product} setmsg={setmsg} />
+                </div>
               ))
             )}
           </div>
         </div>
       </div>
 
-      <FeaturedProducts products={products} setmsg={setmsg} />
-      <BestSellers products={products} setmsg={setmsg} />
-      <NewArrivals products={products} setmsg={setmsg} />
+
+      <FeaturedProducts
+        products={products}
+        setmsg={setmsg}
+        setSelectedProduct={setSelectedProduct}
+      />
+      <BestSellers
+        products={products}
+        setmsg={setmsg}
+        setSelectedProduct={setSelectedProduct}
+      />
+      <NewArrivals
+        products={products}
+        setmsg={setmsg}
+        setSelectedProduct={setSelectedProduct}
+      />
+      {selectedProduct && (
+        <ProductDetails
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 }

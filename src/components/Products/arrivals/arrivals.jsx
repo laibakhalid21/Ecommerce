@@ -1,7 +1,7 @@
 import React from "react";
 import ProductCard from "../productCard/productCard";
 
-function NewArrivals({ products, renderStars,setmsg }) {
+function NewArrivals({ products, renderStars, setmsg,setSelectedProduct }) {
   const newArrivals = products.slice(-4);
 
   return (
@@ -9,8 +9,13 @@ function NewArrivals({ products, renderStars,setmsg }) {
       <h2 className="text-4xl sm:text-5xl font-semibold text-center mb-10">New Arrivals</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {newArrivals.map((product) => (
-          <ProductCard key={product.id} product={product} renderStars={renderStars} setmsg={setmsg} />
-        ))}
+          <div
+            key={product.id}
+            className="cursor-pointer"
+            onClick={() => setSelectedProduct(product)}
+          >
+            <ProductCard product={product} setmsg={setmsg} />
+          </div>))}
       </div>
     </div>
   );

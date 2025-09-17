@@ -1,6 +1,6 @@
 import React from "react";
 
-function SearchBox({ searchQuery, setSearchQuery, category, setCategory }){
+function SearchBox({ searchQuery, setSearchQuery}){
     return(
         <>
         <input

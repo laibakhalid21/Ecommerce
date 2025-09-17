@@ -3,35 +3,33 @@ import { NavLink } from "react-router-dom";
 import { ShoppingCart, Heart, Package, User, Menu, X, Search } from "lucide-react";
 import { useCartStore } from "../CartContext/cartContext";
 import SearchBox from "./search/search";
+import MiniCartDropdown from "../Cart/CartdropDown";
+import { useWishlistStore } from "../wishlist/wishlistStore/wishliststore";
 
 function Navbar({ searchQuery, setSearchQuery }) {
   const cart = useCartStore((state) => state.cart);
+  const wishlist = useWishlistStore((state) => state.wishlist)
+
   const totalItems = cart.length;
+  const totalWishlist = wishlist.length
 
   const [isOpen, setIsOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const menuRef = useRef(null);
+  const [showCartDropdown, setShowCartDropdown] = useState(false);
 
-  const [menuHeight, setMenuHeight] = useState(0);
 
-  useEffect(() => {
-    if (menuRef.current) {
-      setMenuHeight(isOpen ? menuRef.current.scrollHeight : 0);
-    }
-  }, [isOpen]);
 
   const nav1 = [
     { name: "Home", path: "/Home" },
     { name: "Products", path: "/Products" },
     { name: "Account/Login", path: "/login", icon: <User size={18} /> },
-    { name: "Cart", path: "/cart", icon: <ShoppingCart size={18} />, count: true },
-    { name: "Wishlist", path: "/wishlist", icon: <Heart size={18} /> },
+    { name: "Cart", path: "/cart", icon: <ShoppingCart size={18} />, count: totalItems, dropdown: true },
+    { name: "Wishlist", path: "/wishlist", icon: <Heart size={18} />, count: totalWishlist },
     { name: "Orders", path: "/orders", icon: <Package size={18} /> },
   ];
 
   const linkClasses = ({ isActive }) =>
-    `relative transition-colors duration-200 ${
-      isActive ? "text-red-500 font-bold" : "hover:text-gray-100"
+    `relative transition-colors duration-200 ${isActive ? "text-red-500 font-bold" : "hover:text-gray-100"
     } after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-current after:transition-all after:duration-300 hover:after:w-full`;
 
   return (
@@ -50,19 +48,35 @@ function Navbar({ searchQuery, setSearchQuery }) {
 
           <ul className="hidden md:flex xl:gap-20 gap-6 px-2">
             {nav1.map((item, i) => (
-              <li key={i} className="flex items-center gap-1">
-                <div className="relative">
-                  {item.icon}
-                  {item.count && (
-                    <sup className="absolute -top-3 -right-1 bg-yellow-400 text-black h-4 w-4 flex justify-center items-center rounded-full text-xs font-bold">
-                      {totalItems}
-                    </sup>
+              <li key={i} className="group relative"
+                onMouseEnter={() => item.dropdown && setShowCartDropdown(true)}
+                onMouseLeave={() => item.dropdown && setShowCartDropdown(false)}>
+                <div
+                  className="relative"
+                >
+                  <div className="flex items-center gap-1 cursor-pointer">
+                    <div className="relative">
+                      {item.icon}
+                      {item.count >= 0 && (
+                        <sup className="absolute -top-3 -right-1 bg-yellow-400 text-black h-4 w-4 flex justify-center items-center rounded-full text-xs font-bold">
+                          {item.count}
+                        </sup>
+                      )}
+                    </div>
+                    <NavLink to={item.path} className={linkClasses}>
+                      {item.name}
+                    </NavLink>
+                  </div>
+
+                  {item.dropdown && showCartDropdown && (
+                    <div className="absolute top-full z-50">
+                      <MiniCartDropdown />
+                    </div>
                   )}
                 </div>
-                <NavLink to={item.path} className={linkClasses}>
-                  {item.name}
-                </NavLink>
               </li>
+
+
             ))}
           </ul>
 
@@ -99,26 +113,38 @@ function Navbar({ searchQuery, setSearchQuery }) {
         </div>
       )}
 
-      <div
-        ref={menuRef}
-        className="md:hidden bg-blue-900 overflow-hidden transition-all duration-300"
-        style={{ height: menuHeight }}
-      >
-        <ul className="flex flex-col gap-4 p-6 text-white">
-          {nav1.map((item, i) => (
-            <li key={i} className="flex items-center gap-2">
-              {item.icon}
-              <NavLink
-                to={item.path}
-                className={linkClasses}
-                onClick={() => setIsOpen(false)}
-              >
-                {item.name}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </div>
+
+
+{isOpen && (
+  <div
+    onClick={() => setIsOpen(false)}
+    className="fixed inset-0 top-24 bg-black bg-opacity-50 z-40 md:hidden transition-opacity duration-300"
+  ></div>
+)}
+
+<div
+  className={`fixed left-0 h-full w-64 bg-blue-900 text-white z-50 transform transition-transform duration-300 md:hidden ${
+    isOpen ? "translate-x-0" : "-translate-x-full"
+  }`}
+  style={{ top: "6rem" }}
+>
+  <ul className="flex flex-col gap-6 p-6">
+    {nav1.map((item, i) => (
+      <li key={i} className="flex items-center gap-3">
+        {item.icon}
+        <NavLink
+          to={item.path}
+          className={linkClasses}
+          onClick={() => setIsOpen(false)}
+        >
+          {item.name}
+        </NavLink>
+      </li>
+    ))}
+  </ul>
+</div>
+
+
     </nav>
   );
 }

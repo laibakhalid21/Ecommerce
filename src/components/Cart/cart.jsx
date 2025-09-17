@@ -9,8 +9,6 @@ function Cart() {
     const updateQty = useCartStore((state) => state.updateQty);
     const clearCart = useCartStore((state) => state.clearCart);
     const navigate = useNavigate();
-    const [qty, setQty] = useState(1);
-    const price = 1400;
 
 
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -38,7 +36,7 @@ function Cart() {
                     <h1 className="text-blue-950 font-bold text-5xl">Your Shopping Cart</h1>
                 </div>
 
-                <div className="hidden sm:block w-full max-w-6xl">
+                <div className="hidden lg:block w-full max-w-6xl">
                     <table className="min-w-full border border-gray-400 text-center">
                         <thead className="bg-gray-200">
                             <tr>
@@ -96,8 +94,8 @@ function Cart() {
                     </table>
                 </div>
 
-
-                <div className="sm:hidden w-full flex flex-col gap-4">
+{/*mobile */}
+                <div className="lg:hidden w-full flex flex-col gap-4">
                     {cart.map((item) => (
                         <div key={item.id} className="bg-white border border-gray-400 rounded-lg p-4 shadow-sm flex flex-col gap-2">
                             <div className="flex justify-between items-center">
