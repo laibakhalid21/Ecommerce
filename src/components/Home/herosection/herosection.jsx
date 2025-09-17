@@ -27,7 +27,7 @@ function HeroSection() {
   }, [images.length]);
 
   return (
-    <div className="w-full bg-[url('back1.jpg')] bg-cover bg-center bg-no-repeat">
+    <div className="w-full  bg-[url('/back1.jpg')] bg-cover bg-center bg-no-repeat">
       <div className="w-full max-w-[1980px] mx-auto grid grid-cols-1 md:grid-cols-2 px-6 xl:px-16 gap-10">
         <div className="text-center md:text-left 2xl:px-16 md:pb-32 flex flex-col justify-center rounded-lg p-6">
           <h1 className="text-4xl lg:text-4xl xl:text-5xl font-bold text-blue-950 py-8">
