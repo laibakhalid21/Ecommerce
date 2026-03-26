@@ -23,11 +23,6 @@ https://laibakhalid21.github.io/Ecommerce/
 
 
 
-## Screenshots
-_Add product page, cart, and UI screenshots_
-
-
-
 ## Learning Outcome
 This project helped improve frontend development skills, including UI design, responsive layouts, and building interactive user experiences.
 
