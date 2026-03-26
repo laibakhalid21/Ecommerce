@@ -1,27 +1,34 @@
 # E-commerce Web Application
 
 ## Description
-This is a modern and responsive E-commerce web application built using React.js and Tailwind CSS. The application allows users to browse products, view details, and manage a shopping cart using local storage.
+A fully responsive e-commerce website built using React.js and Tailwind CSS. It allows users to browse products, search, filter, and manage a shopping cart.
 
 
 ## Features
-- Product listing with API integration  
-- View product details  
-- Add to cart functionality  
-- Cart data stored using localStorage  
-- Fully responsive design  
-- Fast and clean UI using Tailwind CSS  
+- Browse products  
+- Search and filter functionality  
+- Add to cart and checkout system  
+- Mobile-friendly responsive design  
+- Smooth and interactive UI  
 
 
 ## Technologies Used
 - React.js  
 - Tailwind CSS  
-- JavaScript (ES6+)  
-- REST API  
 
 
-## Installation & Setup
 
-1. Clone the repository  
-```bash
-git clone https://github.com/your-username/your-repo-name.git
+##  Live Demo
+https://laibakhalid21.github.io/Ecommerce/
+
+
+
+## Screenshots
+_Add product page, cart, and UI screenshots_
+
+
+
+## Learning Outcome
+This project helped improve frontend development skills, including UI design, responsive layouts, and building interactive user experiences.
+
+
